@@ -1,0 +1,37 @@
+<html>
+<head>
+    <title>PrintRIP controller</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    {% if request.args.get('periodic') > 0 %}
+        <meta http-equiv="refresh" content="{{ request.args.get('periodic') }}">
+    {% endif %}
+</head>
+<body>
+    {% if msg is defined %}
+        {{ msg|safe }}<br>
+    {% endif %}
+
+    <a href="preview"><input type="button" value="Obnovit náhled"></a>
+    <a href="?periodic=10"><input type="button" value="Periodicky"></a><br>
+    <a href="static/rip_img.jpg?{{ timestamp }}" target="_self">
+        <img src="static/rip_img.jpg?{{ timestamp }}" width="180">
+    </a><p></p>
+    <form action="start" method="post">
+        Záznam zvuku<br>
+        <input type="radio" name="sound_type" value="from-projection" checked>Pouze ze zvukové stopy<br>
+        <input type="radio" name="sound_type" value="from-room">Pouze ze sálu<br>
+        <input type="radio" name="sound_type" value="both">Z obou zdrojů<br>
+        <input type="radio" name="sound_type" value="none">Bez zvuku<br>
+        <input type="submit" value="Spustit nahrávání" {% if ffmpeg_pid != 0 %}disabled{% endif %}>
+        <a href="stop"><input type="button" value="Ukončit" {% if ffmpeg_pid == 0 %}disabled{% endif %}></a><p></p>
+    </form>
+    <form action="setname" method="post">
+        Identifikační číslo materiálu<br>
+        <input type="radio" name="print_id" value="000000" checked>Není známo<br>
+        <input type="radio" name="print_id" value="CUSTOM" {% if print_id != '000000'%}checked{% endif %}>
+        <input type="text" name="print_id_custom" {%  if print_id != '000000' %} value="{{ print_id }}" {% else %} placeholder="např. K23428" {% endif %}><br>
+        Fakultativní název titulu<br>
+        <input type="text" name="title_name" {% if title_name != '' %}value="{{ title_name }}" {% else %}placeholder="např. ZF 0186"{% endif %}><br>
+        <input type="submit" value="Nastavit název">
+    </form><p></p>
+</body></html>

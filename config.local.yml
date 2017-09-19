@@ -1,0 +1,47 @@
+---
+options:
+  domain: 'localhost:5000'
+  output_dir: '.'
+  tmp_filename: 'tmp.mkv'
+  dst_filename: '{print_id}_{title_name}_rip_{timestamp}.mkv'
+  recording:
+    input_cmd: 'ffmpeg -hide_banner -loglevel error -f lavfi -i cellauto=rule=110:s=720x576 -f lavfi -i sine=frequency=220 -f lavfi -i sine=frequency=880 -c:v mjpeg -c:a copy -map 0 -map 1 -map 2 -f matroska -'
+    output_cmd: 'ffmpeg -hide_banner -loglevel error -y -i -'
+    output_param_order: 'video_codec,audio_codec,filters,extra_args,format,destination'
+    outputs:
+      - destination: '{tmp_filepath}'
+        format: '-f matroska'
+        video_codec: '-c:v ffv1 -map 0:0'
+        audio_codec: '-c:a pcm_s24le {sound_type}'
+        filters: '-vf yadif=0,hflip,vflip'
+        extra_args: ''
+      - destination: 'static/rip_img.jpg'
+        format: '-f image2'
+        video_codec: ''
+        audio_codec: ''
+        filters: '-vf hflip,vflip,fps=1/10'
+        extra_args: '-update 1'
+    sound-type:
+      from-projection: '-map 0:1?'
+      from-room: '-map 0:2?'
+      both: '-map 0:1? -map 0:2?'
+      none: '-an'
+    kill_command: 'kill -INT $(pidof ffmpeg)'
+  preview_command: 'ffmpeg -hide_banner -loglevel error -y -f lavfi -i cellauto=rule=110:s=720x576 -vf hflip,vflip -vframes 1 -f image2 static/rip_img.jpg'
+
+messages:
+  idle: 'Vždy připraven!'
+  rec_running: 'Nahrávání běží!'
+  rec_start_ok: 'Nahrávání bylo spuštěno'
+  rec_start_err: 'ERROR: chyba při spouštění nahrávání'
+  rec_stop_ok: 'Nahrávání ukončeno, uloženo jako <a href="download/{filename}">{filename}</a>'
+  rec_stop_err: 'ERROR: není spuštěno nahrávání, či nejsou vyplněny údaje'
+  preview: 'Náhled obnoven'
+
+credentials:
+  credential_path: 'printrip-webapp_secret.json'
+  scopes:
+    - 'https://www.googleapis.com/auth/spreadsheets'
+  sheets_discovery: 'https://sheets.googleapis.com/$discovery/rest?version=v4'
+  sheet_id: ''
+  sheet_range: 'Sheet1'
