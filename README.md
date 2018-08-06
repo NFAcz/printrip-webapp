@@ -11,7 +11,7 @@ This web application allows either a projectionist, or a viewer to control live 
 ## Usage
     $ virtualenv venv
     $ source venv/bin/activate
-    $ pip install -r requirements.exe
+    $ pip install -r requirements.txt
     $ python app.py -h
     usage: app.py [-h] [-c CONFIG] [-l LISTEN] [-p PORT] [-d]
 
