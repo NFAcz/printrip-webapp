@@ -1,13 +1,17 @@
 ### PrintRIP controller
 
 ## About
-This small web application lets either projectionist or curator to control starting/stopping of PrintRip recording, as well as naming the resulting file.
+This web application allows either a projectionist, or a viewer to control live recording of a projected film from the cinema screen. DV camera required.
 
 ## Requirements
     python >= 2.7
-    Flask
+    python-virtualenv
+    dvgrab
 
 ## Usage
+    $ virtualenv venv
+    $ source venv/bin/activate
+    $ pip install -r requirements.exe
     $ python app.py -h
     usage: app.py [-h] [-c CONFIG] [-l LISTEN] [-p PORT] [-d]
 
